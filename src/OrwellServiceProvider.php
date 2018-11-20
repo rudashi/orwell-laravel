@@ -7,8 +7,6 @@ use Illuminate\Support\ServiceProvider;
 class OrwellServiceProvider extends ServiceProvider
 {
 
-    protected $defer = true;
-
     public function boot() : void
     {
         $this->loadRoutesFrom(__DIR__.'/api.php');
