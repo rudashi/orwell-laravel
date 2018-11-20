@@ -1,0 +1,31 @@
+{
+    "name": "rudashi/orwell-laravel",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Borys Żmuda",
+            "email": "rudashi@gmail.com"
+        }
+    ],
+    "repositories": [
+
+    ],
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rudashi\\Orwell\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rudashi\\Orwell\\OrwellServiceProvider"
+            ]
+        }
+    }
+}
