@@ -8,15 +8,15 @@ General System Requirements
 
 Quick Installation
 -------------
-If needed use composer to grab the library
+If necessary, use the composer to download the library
 
-```
+```bash
 $ composer require rudashi/orwell-laravel
 ```
 
 Remember to put repository in composer.json
 
-```
+```json
 "repositories": [
     {
         "type": "vcs",
@@ -75,4 +75,4 @@ GET /api/orwell/{letters}
 Authors
 -------------
 
-* **Borys Zmuda** - Lead designer - [GoldenLine](http://www.goldenline.pl/borys-zmuda/)
+* **Borys Żmuda** - [LinkedIn](https://www.linkedin.com/in/boryszmuda/), [Portfolio](https://rudashi.github.io/)

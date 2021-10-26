@@ -7,9 +7,6 @@
             "email": "rudashi@gmail.com"
         }
     ],
-    "repositories": [
-
-    ],
     "require": {
         "php": ">=7.1.0"
     },
@@ -17,8 +14,18 @@
         "phpunit/phpunit": "^6.0"
     },
     "autoload": {
+        "classmap": [
+            "src/database/migrations/",
+            "src/database/seeders/"
+        ],
         "psr-4": {
-            "Rudashi\\Orwell\\": "src/"
+            "Rudashi\\Orwell\\": "src/",
+            "Rudashi\\Orwell\\Database\\Seeders\\": "src/database/seeders"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     },
     "extra": {
