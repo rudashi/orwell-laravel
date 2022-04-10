@@ -3,6 +3,8 @@
 namespace Rudashi\Orwell;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class WordController extends Controller
 {
@@ -13,7 +15,7 @@ class WordController extends Controller
         $this->repository = $repository;
     }
 
-    public function search(string $letters) : \Illuminate\Http\JsonResponse
+    public function search(string $letters) : JsonResponse
     {
         try {
             $letters = $this->repository->prepareInputSearch($letters);
@@ -32,7 +34,7 @@ class WordController extends Controller
 
     }
 
-    public function allWords(string $letters) : \Illuminate\Http\JsonResponse
+    public function allWords(string $letters) : JsonResponse
     {
         try {
             $letters = $this->repository->prepareInputSearch($letters);
@@ -45,22 +47,44 @@ class WordController extends Controller
         }
     }
 
-    public function responseError(string $message, int $statusCode = 400) : \Illuminate\Http\JsonResponse
+    public function find(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'letters' => [
+                'required',
+                'string',
+                'regex:/[A-ZĄĆĘŁŃÓŚŹŻ\?]/iu',
+                'max:255'
+            ],
+        ]);
+
+        try {
+            $letters = $this->repository->prepareInputSearch($validated['letters']);
+            $collection = $this->repository->anagram($letters);
+
+            return response()->json($collection);
+
+        } catch (\Exception $e) {
+            return $this->responseException($e);
+        }
+    }
+
+    public function responseError(string $message, int $statusCode = 400) : JsonResponse
     {
         return response()->json([
             'error' => $message,
         ], $statusCode);
     }
 
-    public function responseException(\Exception $exception) : \Illuminate\Http\JsonResponse
+    public function responseException(\Exception $exception) : JsonResponse
     {
         switch ($exception->getCode()) {
             case 7:
-                return $this->responseError('Database Missing.', 400);
+                return $this->responseError('Database Missing.', 500);
             case '42P01':
-                return $this->responseError('Table Missing.', 400);
+                return $this->responseError('Table Missing.', 500);
             default:
-                return $this->responseError($exception->getMessage(), 400);
+                return $this->responseError($exception->getMessage());
         }
     }
 }

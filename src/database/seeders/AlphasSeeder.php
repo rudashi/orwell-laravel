@@ -3,13 +3,14 @@
 namespace Rudashi\Orwell\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class AlphasSeeder extends Seeder
 {
 
     public function run() : void
     {
-        DB::table('alphas')->insert([
+        DB::connection('orwell')->table('alphas')->insert([
             [
                 'letter' => 'a',
                 'points' => 1,

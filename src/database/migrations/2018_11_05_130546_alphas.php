@@ -8,9 +8,11 @@ use Illuminate\Database\Migrations\Migration;
 class Alphas extends Migration
 {
 
+    protected $connection = 'orwell';
+
     public function up(): void
     {
-        Schema::create('alphas', function (Blueprint $table) {
+        Schema::connection('orwell')->create('alphas', static function (Blueprint $table) {
             $table->string('letter');
             $table->tinyInteger('points');
         });
@@ -23,7 +25,7 @@ class Alphas extends Migration
 
     public function down(): void
     {
-        Schema::drop('alphas');
+        Schema::connection('orwell')->drop('alphas');
     }
 
 }

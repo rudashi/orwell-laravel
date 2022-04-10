@@ -28,7 +28,7 @@ class WordRepository
             ->selectRaw('
             (
                 SELECT SUM(points)
-                FROM ( SELECT regexp_split_to_table(words.word,E\'(?=.)\') the_word ) tab 
+                FROM ( SELECT regexp_split_to_table(words.word,E\'(?=.)\') the_word ) tab
                 LEFT JOIN alphas ON the_word = letter
              ) as points')
             ->where('characters', '<@', $engine->getSearchValue())
@@ -57,4 +57,5 @@ class WordRepository
     {
         return preg_match('/[A-ZĄĆĘŁŃÓŚŹŻ\?]/iu', $letters);
     }
+
 }
