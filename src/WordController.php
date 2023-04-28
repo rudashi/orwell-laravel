@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rudashi\Orwell;
 
-use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class WordController extends Controller
 {
-    private $repository;
-
-    public function __construct(WordRepository $repository)
-    {
-        $this->repository = $repository;
+    public function __construct(
+        private readonly WordRepository $repository
+    ) {
     }
 
-    public function search(string $letters) : JsonResponse
+    public function search(string $letters): JsonResponse
     {
         try {
             $letters = $this->repository->prepareInputSearch($letters);
@@ -27,22 +28,19 @@ class WordController extends Controller
                     'words' => $collection
                 ])
             ]);
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->responseException($e);
         }
-
     }
 
-    public function allWords(string $letters) : JsonResponse
+    public function allWords(string $letters): JsonResponse
     {
         try {
             $letters = $this->repository->prepareInputSearch($letters);
             $collection = $this->repository->anagram($letters);
 
             return response()->json($collection);
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->responseException($e);
         }
     }
@@ -53,7 +51,7 @@ class WordController extends Controller
             'letters' => [
                 'required',
                 'string',
-                'regex:/[A-ZĄĆĘŁŃÓŚŹŻ\?]/iu',
+                'regex:' . $this->repository::REGEX,
                 'max:255'
             ],
         ]);
@@ -63,28 +61,22 @@ class WordController extends Controller
             $collection = $this->repository->anagram($letters);
 
             return response()->json($collection);
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->responseException($e);
         }
     }
 
-    public function responseError(string $message, int $statusCode = 400) : JsonResponse
+    public function responseError(string $message, int $statusCode = 400): JsonResponse
     {
-        return response()->json([
-            'error' => $message,
-        ], $statusCode);
+        return response()->json(['error' => $message], $statusCode);
     }
 
-    public function responseException(\Exception $exception) : JsonResponse
+    public function responseException(\Exception $exception): JsonResponse
     {
-        switch ($exception->getCode()) {
-            case 7:
-                return $this->responseError('Database Missing.', 500);
-            case '42P01':
-                return $this->responseError('Table Missing.', 500);
-            default:
-                return $this->responseError($exception->getMessage());
-        }
+        return match ($exception->getCode()) {
+            7 => $this->responseError('Database Missing.', 500),
+            '42P01' => $this->responseError('Table Missing.', 500),
+            default => $this->responseError($exception->getMessage()),
+        };
     }
 }

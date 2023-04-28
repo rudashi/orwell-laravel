@@ -1,22 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rudashi\Orwell;
 
 use Illuminate\Support\ServiceProvider;
 
 class OrwellServiceProvider extends ServiceProvider
 {
+    public const PACKAGE = 'orwell';
+    private const MIGRATION = __DIR__ . '/database/migrations';
+    private const CONFIG = __DIR__ . '/config/config.php';
 
-    public function boot() : void
+    public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadMigrationsFrom(self::MIGRATION);
 
-        $this->loadRoutesFrom(__DIR__.'/api.php');
+        $this->publish();
     }
 
-    public function register() : void
+    public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/config/config.php', 'database.connections');
+        $this->mergeConfigFrom(self::CONFIG, 'database.connections');
     }
 
+    private function publish(): void
+    {
+        $this->publishes([
+            self::MIGRATION => $this->app->databasePath('migrations'),
+        ], self::PACKAGE . '-migrations');
+
+        $this->publishes([
+            self::CONFIG => $this->app->configPath(self::PACKAGE . '.php'),
+        ], self::PACKAGE . '-config');
+    }
 }

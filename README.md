@@ -1,13 +1,12 @@
-Orwell Laravel Package
-================
+# Orwell Laravel Package
 
-General System Requirements
--------------
-- [PHP >7.1.0](http://php.net/)
-- [Laravel ~5.6.*](https://github.com/laravel/framework)
+## General System Requirements
 
-Quick Installation
--------------
+- [PHP ^8.1](http://php.net/)
+- [Laravel ^10.0](https://github.com/laravel/framework)
+
+## Quick Installation
+
 If necessary, use the composer to download the library
 
 ```bash
@@ -17,62 +16,59 @@ $ composer require rudashi/orwell-laravel
 Remember to put repository in composer.json
 
 ```json
-"repositories": [
-    {
-        "type": "vcs",
-        "url":  "https://github.com/rudashi/orwell-laravel.git"
-    }
-],
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "https://github.com/rudashi/orwell-laravel.git"
+        }
+    ]
+}
 ```
 
-Usage
--------------
+## Usage
 
 ### SQL
 
--- Populate it
-```sql
+-- Populate database
+
+```postgresql
 UPDATE words SET characters = regexp_split_to_array(word, '') WHERE characters IS NULL;
 ```
 
 -- Remove Null after populate
-```sql
+
+```postgresql
 ALTER TABLE words ALTER COLUMN characters SET NOT NULL;
 ```
 
--- An index on word length
-```sql
-CREATE INDEX ix_word_length ON words (char_length(word));
-```
+-- Add points to words
 
--- If needed
-```sql
-CREATE OR REPLACE FUNCTION sort_chars(text) RETURNS text AS
-    $func$
-SELECT array_to_string(ARRAY(SELECT unnest(string_to_array($1 COLLATE "C", NULL)) c ORDER BY c), '')
-    $func$  LANGUAGE sql IMMUTABLE;
-```
-
--- If needed add points to words
-```sql
+```postgresql
 UPDATE words SET points =
   (
-      SELECT SUM(points)
+      SELECT SUM(alphas.points)
       FROM ( SELECT regexp_split_to_table(words.word,E'(?=.)') the_word) tab 
       LEFT JOIN alphas ON the_word = letter
   )
 WHERE points IS NULL
 ```
 
-### API
+-- If missing function `sort_chars()`
 
-Get All words from characters. 
+```postgresql
+CREATE OR REPLACE FUNCTION sort_chars(text) RETURNS text AS
+    $func$
+SELECT array_to_string(ARRAY(SELECT unnest(string_to_array($1 COLLATE "C", NULL)) c ORDER BY c), '')
+    $func$  LANGUAGE sql IMMUTABLE;
 ```
-GET /api/orwell/{letters}
+
+-- if missing an index on word length
+
+```postgresql
+CREATE INDEX ix_word_length ON words (char_length(word));
 ```
 
+## Authors
 
-Authors
--------------
-
-* **Borys Żmuda** - [LinkedIn](https://www.linkedin.com/in/boryszmuda/), [Portfolio](https://rudashi.github.io/)
+* **Borys Żmuda** - Lead designer - [LinkedIn](https://www.linkedin.com/in/boryszmuda/), [Portfolio](https://rudashi.github.io/)
