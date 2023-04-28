@@ -36,8 +36,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
-        }
+            "Rudashi\\Orwell\\Tests\\": "tests/"
+        },
+        "files": [
+            "tests/Pest.php"
+        ]
     },
     "extra": {
         "laravel": {
