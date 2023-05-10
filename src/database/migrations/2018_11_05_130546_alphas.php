@@ -13,16 +13,18 @@ return new class () extends Migration {
 
     public function up(): void
     {
-        Schema::create('alphas', static function (Blueprint $table) {
-            $table->string('letter');
-            $table->tinyInteger('points');
-        });
+        if (Schema::hasTable('alphas') === false) {
+            Schema::create('alphas', static function (Blueprint $table) {
+                $table->string('letter');
+                $table->tinyInteger('points');
+            });
 
-        (new AlphasSeeder())->run();
+            (new AlphasSeeder())->run();
+        }
     }
 
     public function down(): void
     {
-        Schema::drop('alphas');
+        Schema::dropIfExists('alphas');
     }
 };
