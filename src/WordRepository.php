@@ -18,7 +18,7 @@ class WordRepository
         $this->db = $db->connection(OrwellServiceProvider::PACKAGE);
     }
 
-    public function anagram(string $letters, int $limit = null): Collection
+    public function anagram(string $letters, int $limit = -1): Collection
     {
         $engine = Engine::for($letters, $limit)->validate();
 
