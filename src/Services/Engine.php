@@ -16,19 +16,21 @@ class Engine
     private int $wildcardsCount;
     private string $searchValue;
     private string $excludeValue;
-    private int $limit = -1;
+    private int $limit;
 
-    public function __construct(string $characters)
+    public function __construct(string $characters, int $limit = -1)
     {
-        $this->setCharacters(preg_split('//u', mb_strtolower($characters), -1, PREG_SPLIT_NO_EMPTY));
-        $this->setWildcardsCount($this->countWildcards());
-        $this->setSearchValue($this->characters);
-        $this->setExcludeValue($this->characters);
+        $this->characters = (new Collection($this->parseCharacters($characters)))->mapInto(Alpha::class);
+        $this->charactersCount = $this->characters->count();
+        $this->wildcardsCount = $this->countWildcards();
+        $this->searchValue = $this->parsePostgresArray($this->characters, true);
+        $this->excludeValue = $this->parsePostgresArray($this->characters);
+        $this->limit = $limit;
     }
 
     public static function for(string $characters, int|null $limit = null): Engine
     {
-        return (new self($characters))->setLimit($limit ?? 0);
+        return new self($characters, $limit ?? 0);
     }
 
     public function validate(): self
@@ -36,42 +38,6 @@ class Engine
         if ($this->getCharactersCount() < self::MIN_CHARACTERS) {
             throw new InvalidArgumentException('Not enough characters for search.');
         }
-
-        return $this;
-    }
-
-    public function setCharacters(array $characters): self
-    {
-        $this->characters = (new Collection($characters))->mapInto(Alpha::class);
-        $this->charactersCount = $this->characters->count();
-
-        return $this;
-    }
-
-    public function setWildcardsCount(int $wildcardsCount): self
-    {
-        $this->wildcardsCount = $wildcardsCount;
-
-        return $this;
-    }
-
-    public function setLimit(int $limit): self
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    public function setSearchValue(Collection $characters): self
-    {
-        $this->searchValue = $this->parsePostgresArray($characters, true);
-
-        return $this;
-    }
-
-    public function setExcludeValue(Collection $characters): self
-    {
-        $this->excludeValue = $this->parsePostgresArray($characters);
 
         return $this;
     }
@@ -111,6 +77,11 @@ class Engine
         return $this->characters->sum(static fn (Alpha $alpha) => $alpha->isWildcard());
     }
 
+    private function parseCharacters(string $characters): array
+    {
+        return preg_split('//u', mb_strtolower($characters), -1, PREG_SPLIT_NO_EMPTY);
+    }
+
     private function parsePostgresArray(Collection $collection, bool $withWildcard = false): string
     {
         $characters = $collection->map(function (Alpha $alpha) {
@@ -124,5 +95,4 @@ class Engine
         }
         return '{' . $characters->implode(',') . '}';
     }
-
 }

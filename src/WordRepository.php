@@ -27,14 +27,14 @@ class WordRepository
             ->select('word')
             ->selectRaw('(
                 SELECT SUM(points)
-                FROM ( SELECT regexp_split_to_table(words.word,E\'(?=.)\') the_word ) tab
+                FROM (SELECT regexp_split_to_table(words.word,E\'(?=.)\') the_word) tab
                 LEFT JOIN alphas ON the_word = letter
              ) as points')
             ->where('characters', '<@', $engine->getSearchValue())
             ->whereRaw('char_length(word) <= ?', $engine->getCharactersCount())
             ->whereRaw(
-                sql: '(SELECT count(*) FROM ( SELECT unnest(characters) EXCEPT ALL SELECT unnest(? :: CHAR []) ) extra) <= ?',
-                bindings: [$engine->getExcludeValue(), $engine->getWildcardsCount()]
+                '(SELECT count(*) FROM (SELECT unnest(characters) EXCEPT ALL SELECT unnest(? :: CHAR [])) extra) <= ?',
+                [$engine->getExcludeValue(), $engine->getWildcardsCount()]
             )
             ->orderByRaw('char_length(word) DESC')
             ->orderByDesc('points')

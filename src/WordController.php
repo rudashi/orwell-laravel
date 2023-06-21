@@ -25,8 +25,8 @@ class WordController extends Controller
             return response()->json([
                 'data' => collect([
                     'search' => $letters,
-                    'words' => $collection
-                ])
+                    'words' => $collection,
+                ]),
             ]);
         } catch (Exception $e) {
             return $this->responseException($e);
@@ -52,7 +52,7 @@ class WordController extends Controller
                 'required',
                 'string',
                 'regex:' . $this->repository::REGEX,
-                'max:255'
+                'max:255',
             ],
         ]);
 
@@ -71,7 +71,7 @@ class WordController extends Controller
         return response()->json(['error' => $message], $statusCode);
     }
 
-    public function responseException(\Exception $exception): JsonResponse
+    public function responseException(Exception $exception): JsonResponse
     {
         return match ($exception->getCode()) {
             7 => $this->responseError('Database Missing.', 500),
