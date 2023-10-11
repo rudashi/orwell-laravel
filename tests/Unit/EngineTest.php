@@ -59,7 +59,7 @@ it('pass minimum characters validation', function (string $word) {
 it('fails minimum characters validation', function ($word) {
     $data = Engine::for($word);
 
-    expect(fn() => $data->validate())
+    expect(fn () => $data->validate())
         ->toThrow(
             exception: InvalidArgumentException::class,
             exceptionMessage: 'Not enough characters for search.',
