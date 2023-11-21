@@ -14,7 +14,9 @@ class OrwellServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadMigrationsFrom(self::MIGRATION);
+        if ($this->app->runningUnitTests() === false) {
+            $this->loadMigrationsFrom(self::MIGRATION);
+        }
 
         $this->publish();
     }
