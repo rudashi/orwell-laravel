@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Rudashi\Orwell\Events\AnagramFound;
 
 class WordController extends Controller
 {
@@ -21,6 +22,8 @@ class WordController extends Controller
         try {
             $letters = $this->repository->prepareInputSearch($letters);
             $collection = $this->repository->anagram($letters, 25);
+
+            event(new AnagramFound($letters, $collection));
 
             return response()->json([
                 'data' => collect([
@@ -38,6 +41,8 @@ class WordController extends Controller
         try {
             $letters = $this->repository->prepareInputSearch($letters);
             $collection = $this->repository->anagram($letters);
+
+            event(new AnagramFound($letters, $collection));
 
             return response()->json($collection);
         } catch (Exception $e) {
@@ -59,6 +64,8 @@ class WordController extends Controller
         try {
             $letters = $this->repository->prepareInputSearch($validated['letters']);
             $collection = $this->repository->anagram($letters);
+
+            event(new AnagramFound($letters, $collection, $request));
 
             return response()->json($collection);
         } catch (Exception $e) {
