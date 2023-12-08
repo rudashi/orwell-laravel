@@ -18,10 +18,9 @@ class AnagramFound
         public string $letters,
         public Collection $anagrams,
         Request $request = null
-    )
-    {
+    ) {
         if ($request) {
-            $this->ips = $request->getClientIps() ?? ['xxx.xxx.xxx.xxx'];
+            $this->ips = $request->getClientIps();
         }
     }
 }
