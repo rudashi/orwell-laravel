@@ -3,7 +3,7 @@
 ## General System Requirements
 
 - [PHP ^8.1](http://php.net/)
-- [Laravel ^10.0](https://github.com/laravel/framework)
+- [Laravel ^11.0](https://github.com/laravel/framework)
 
 ## Quick Installation
 
