@@ -14,6 +14,9 @@ class AnagramFound
      */
     public array $ips = [];
 
+    /**
+     * @param \Illuminate\Support\Collection<int, \stdClass> $anagrams
+     */
     public function __construct(
         public string $letters,
         public Collection $anagrams,

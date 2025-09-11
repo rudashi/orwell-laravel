@@ -18,6 +18,9 @@ class WordRepository
         $this->db = $db->connection(OrwellServiceProvider::PACKAGE);
     }
 
+    /**
+     * @return \Illuminate\Support\Collection<int, \stdClass>
+     */
     public function anagram(string $letters, int $limit = -1): Collection
     {
         $engine = Engine::for($letters, $limit)->validate();

@@ -11,6 +11,9 @@ class Engine
 {
     public const MIN_CHARACTERS = 2;
 
+    /**
+     * @var \Illuminate\Support\Collection<int, \Rudashi\Orwell\Services\Alpha>
+     */
     private Collection $characters;
     private int $charactersCount;
     private int $wildcardsCount;
@@ -47,6 +50,9 @@ class Engine
         return $this->charactersCount;
     }
 
+    /**
+     * @return \Illuminate\Support\Collection<int, \Rudashi\Orwell\Services\Alpha>
+     */
     public function getCharacters(): Collection
     {
         return $this->characters;
@@ -74,14 +80,20 @@ class Engine
 
     private function countWildcards(): int
     {
-        return $this->characters->sum(static fn (Alpha $alpha) => $alpha->isWildcard());
+        return $this->characters->filter(static fn (Alpha $alpha) => $alpha->isWildcard())->count();
     }
 
+    /**
+     * @return string[]
+     */
     private function parseCharacters(string $characters): array
     {
         return preg_split('//u', mb_strtolower($characters), -1, PREG_SPLIT_NO_EMPTY);
     }
 
+    /**
+     * @param \Illuminate\Support\Collection<int, \Rudashi\Orwell\Services\Alpha> $collection
+     */
     private function parsePostgresArray(Collection $collection, bool $withWildcard = false): string
     {
         $characters = $collection->map(function (Alpha $alpha) {
