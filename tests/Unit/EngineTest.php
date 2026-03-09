@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rudashi\Orwell\Tests\EngineTest;
+namespace Rudashi\Orwell\Tests\Unit;
 
 use InvalidArgumentException;
 use Rudashi\Orwell\Services\Engine;
-use Tests\TestCase;
-
-uses(TestCase::class);
 
 it('returns Engine based on word', function () {
     $data = new Engine('kaja*k');
@@ -59,7 +56,7 @@ it('pass minimum characters validation', function (string $word) {
 it('fails minimum characters validation', function ($word) {
     $data = Engine::for($word);
 
-    expect(fn () => $data->validate())
+    expect($data->validate(...))
         ->toThrow(
             exception: InvalidArgumentException::class,
             exceptionMessage: 'Not enough characters for search.',

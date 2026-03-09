@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Rudashi\Orwell\Events\AnagramFound;
 
-class WordController extends Controller
+final class WordController extends Controller
 {
     public function __construct(
         private readonly WordRepository $repository

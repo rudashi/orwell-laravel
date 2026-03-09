@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rudashi\Orwell;
 
 use Illuminate\Database\Connection;
@@ -59,6 +61,6 @@ class WordRepository
 
     private function validateLetters(string $letters): bool
     {
-        return preg_match(self::REGEX, $letters);
+        return (bool) preg_match(self::REGEX, $letters);
     }
 }

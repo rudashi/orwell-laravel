@@ -26,12 +26,12 @@ class Engine
         $this->characters = (new Collection($this->parseCharacters($characters)))->mapInto(Alpha::class);
         $this->charactersCount = $this->characters->count();
         $this->wildcardsCount = $this->countWildcards();
-        $this->searchValue = $this->parsePostgresArray($this->characters, true);
+        $this->searchValue = $this->parsePostgresArrayWithWildcards($this->characters);
         $this->excludeValue = $this->parsePostgresArray($this->characters);
         $this->limit = $limit;
     }
 
-    public static function for(string $characters, int|null $limit = null): Engine
+    public static function for(string $characters, int|null $limit = null): self
     {
         return new self($characters, $limit ?? 0);
     }
@@ -94,17 +94,35 @@ class Engine
     /**
      * @param \Illuminate\Support\Collection<int, \Rudashi\Orwell\Services\Alpha> $collection
      */
-    private function parsePostgresArray(Collection $collection, bool $withWildcard = false): string
+    private function parsePostgresArray(Collection $collection): string
     {
-        $characters = $collection->map(function (Alpha $alpha) {
-            return $alpha->isWildcard() ? null : $alpha->getCharacter();
-        })->filter();
+        $characters = $this->extractNonWildcardCharacters($collection);
 
-        if ($withWildcard === true && $this->getWildcardsCount() > 0) {
+        return '{' . $characters->implode(',') . '}';
+    }
+
+    /**
+     * @param \Illuminate\Support\Collection<int, \Rudashi\Orwell\Services\Alpha> $collection
+     */
+    private function parsePostgresArrayWithWildcards(Collection $collection): string
+    {
+        $characters = $this->extractNonWildcardCharacters($collection);
+
+        if ($this->getWildcardsCount() > 0) {
             $characters = $characters->merge(
                 collect(array_merge(['ą', 'ś', 'ę', 'ż', 'ź', 'ć', 'ń', 'ó', 'ł'], range('a', 'z')))
             );
         }
+
         return '{' . $characters->implode(',') . '}';
+    }
+
+    /**
+     * @param \Illuminate\Support\Collection<int, \Rudashi\Orwell\Services\Alpha> $chars
+     * @return \Illuminate\Support\Collection<int, string>
+     */
+    private function extractNonWildcardCharacters(Collection $chars): Collection
+    {
+        return $chars->map(static fn (Alpha $alpha) => $alpha->isWildcard() ? null : $alpha->getCharacter())->filter();
     }
 }

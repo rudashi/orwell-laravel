@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rudashi\Orwell\Tests\AlphaTest;
+namespace Rudashi\Orwell\Tests\Unit;
 
 use Rudashi\Orwell\Services\Alpha;
-use Tests\TestCase;
-
-uses(TestCase::class);
 
 it('create instance of Alpha', function () {
     $data = new Alpha('a', 5);
@@ -18,13 +15,20 @@ it('create instance of Alpha', function () {
         ->isWildcard()->toBeFalse();
 });
 
-it('determine if character is wildcard', function (string $character, bool $expectation) {
+it('determine that character is wildcard', function (string $character) {
     $data = new Alpha($character);
 
-    expect($data->isWildcard())->toBe($expectation);
+    expect($data->isWildcard())->toBeTrue();
 })->with([
-    ['*', true],
-    [' ', false],
-    ['?', true],
-    ['a', false],
+    ['*'],
+    ['?'],
+]);
+
+it('determine that character is not wildcard', function (string $character) {
+    $data = new Alpha($character);
+
+    expect($data->isWildcard())->toBeFalse();
+})->with([
+    [' '],
+    ['a'],
 ]);
