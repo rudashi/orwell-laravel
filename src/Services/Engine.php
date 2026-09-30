@@ -119,7 +119,7 @@ class Engine
 
     /**
      * @param \Illuminate\Support\Collection<int, \Rudashi\Orwell\Services\Alpha> $chars
-     * @return \Illuminate\Support\Collection<int, string>
+     * @return \Illuminate\Support\Collection<int, non-falsy-string>
      */
     private function extractNonWildcardCharacters(Collection $chars): Collection
     {
