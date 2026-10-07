@@ -6,7 +6,7 @@ namespace Rudashi\Orwell\Tests\Unit;
 
 use Rudashi\Orwell\Services\Alpha;
 
-it('create instance of Alpha', function () {
+it('create instance of Alpha', function (): void {
     $data = new Alpha('a', 5);
 
     expect($data)
@@ -15,7 +15,7 @@ it('create instance of Alpha', function () {
         ->isWildcard()->toBeFalse();
 });
 
-it('determine that character is wildcard', function (string $character) {
+it('determine that character is wildcard', function (string $character): void {
     $data = new Alpha($character);
 
     expect($data->isWildcard())->toBeTrue();
@@ -24,7 +24,7 @@ it('determine that character is wildcard', function (string $character) {
     ['?'],
 ]);
 
-it('determine that character is not wildcard', function (string $character) {
+it('determine that character is not wildcard', function (string $character): void {
     $data = new Alpha($character);
 
     expect($data->isWildcard())->toBeFalse();

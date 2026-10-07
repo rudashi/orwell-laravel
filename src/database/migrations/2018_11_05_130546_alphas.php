@@ -14,7 +14,7 @@ return new class () extends Migration {
     public function up(): void
     {
         if (Schema::hasTable('alphas') === false) {
-            Schema::create('alphas', static function (Blueprint $table) {
+            Schema::create('alphas', static function (Blueprint $table): void {
                 $table->string('letter');
                 $table->tinyInteger('points');
             });

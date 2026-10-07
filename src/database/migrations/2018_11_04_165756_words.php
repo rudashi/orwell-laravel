@@ -14,8 +14,8 @@ return new class () extends Migration {
     public function up(): void
     {
         if (Schema::hasTable('words') === false) {
-            DB::transaction(static function () {
-                Schema::create('words', static function (Blueprint $table) {
+            DB::transaction(static function (): void {
+                Schema::create('words', static function (Blueprint $table): void {
                     $table->string('word');
                     $table->integer('points')->nullable();
                 });

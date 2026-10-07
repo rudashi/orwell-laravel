@@ -7,7 +7,7 @@ namespace Rudashi\Orwell\Tests\Unit;
 use InvalidArgumentException;
 use Rudashi\Orwell\Services\Engine;
 
-it('returns Engine based on word', function () {
+it('returns Engine based on word', function (): void {
     $data = new Engine('kaja*k');
 
     expect($data)
@@ -19,7 +19,7 @@ it('returns Engine based on word', function () {
         ->getExcludeValue()->toBe('{k,a,j,a,k}');
 });
 
-it('create Engine with custom limit', function () {
+it('create Engine with custom limit', function (): void {
     $basic = new Engine('kajak');
     $custom = Engine::for('kajak', 8);
 
@@ -28,7 +28,7 @@ it('create Engine with custom limit', function () {
         ->getLimit()->toBe(8);
 });
 
-it('count Wildcards in word', function (string $word, int $result) {
+it('count Wildcards in word', function (string $word, int $result): void {
     $data = new Engine($word);
 
     expect($data->getWildcardsCount())->toBe($result);
@@ -42,7 +42,7 @@ it('count Wildcards in word', function (string $word, int $result) {
     ['****', 4],
 ]);
 
-it('pass minimum characters validation', function (string $word) {
+it('pass minimum characters validation', function (string $word): void {
     $data = Engine::for($word);
 
     expect($data->validate())->toBe($data);
@@ -53,7 +53,7 @@ it('pass minimum characters validation', function (string $word) {
     'łoś',
 ]);
 
-it('fails minimum characters validation', function ($word) {
+it('fails minimum characters validation', function ($word): void {
     $data = Engine::for($word);
 
     expect($data->validate(...))
@@ -69,14 +69,14 @@ it('fails minimum characters validation', function ($word) {
     'ł',
 ]);
 
-it('returns PostgresSQL array search value', function () {
+it('returns PostgresSQL array search value', function (): void {
     $data = Engine::for('kaj*ak');
 
     expect($data->getSearchValue())
         ->toBe('{k,a,j,a,k,ą,ś,ę,ż,ź,ć,ń,ó,ł,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z}');
 });
 
-it('returns PostgresSQL array excluded value', function () {
+it('returns PostgresSQL array excluded value', function (): void {
     $data = Engine::for('kaj*ak');
 
     expect($data->getExcludeValue())

@@ -9,26 +9,26 @@ use InvalidArgumentException;
 
 class Engine
 {
-    public const MIN_CHARACTERS = 2;
+    public const int MIN_CHARACTERS = 2;
 
     /**
      * @var \Illuminate\Support\Collection<int, \Rudashi\Orwell\Services\Alpha>
      */
-    private Collection $characters;
-    private int $charactersCount;
-    private int $wildcardsCount;
-    private string $searchValue;
-    private string $excludeValue;
-    private int $limit;
+    private readonly Collection $characters;
+    private readonly int $charactersCount;
+    private readonly int $wildcardsCount;
+    private readonly string $searchValue;
+    private readonly string $excludeValue;
 
-    public function __construct(string $characters, int $limit = -1)
-    {
+    public function __construct(
+        string $characters,
+        private readonly int $limit = -1,
+    ) {
         $this->characters = (new Collection($this->parseCharacters($characters)))->mapInto(Alpha::class);
         $this->charactersCount = $this->characters->count();
         $this->wildcardsCount = $this->countWildcards();
         $this->searchValue = $this->parsePostgresArrayWithWildcards($this->characters);
         $this->excludeValue = $this->parsePostgresArray($this->characters);
-        $this->limit = $limit;
     }
 
     public static function for(string $characters, int|null $limit = null): self

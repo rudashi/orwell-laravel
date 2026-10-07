@@ -10,11 +10,11 @@ use Rudashi\Orwell\WordRepository;
 
 uses(TestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->repository = resolve(WordRepository::class);
 });
 
-it('pass input phrase validation', function (string $phrase) {
+it('pass input phrase validation', function (string $phrase): void {
     expect($this->repository->prepareInputSearch($phrase))
         ->toBe($phrase);
 })->with([
@@ -27,7 +27,7 @@ it('pass input phrase validation', function (string $phrase) {
     '*łoś',
 ]);
 
-it('fails input phrase validation', function (string $phrase) {
+it('fails input phrase validation', function (string $phrase): void {
     expect(fn () => $this->repository->prepareInputSearch($phrase))
         ->toThrow(
             exception: InvalidArgumentException::class,
@@ -44,14 +44,14 @@ it('fails input phrase validation', function (string $phrase) {
     '>*łoś',
 ]);
 
-it('returns words based on letters', function () {
+it('returns words based on letters', function (): void {
     $data = $this->repository->anagram('kajak', 25);
 
     expect($data)
         ->toHaveCount(11);
 });
 
-it('returns words based on wildcard letters', function () {
+it('returns words based on wildcard letters', function (): void {
     $data = $this->repository->anagram('ż*', -1);
 
     expect($data)

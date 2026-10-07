@@ -12,8 +12,8 @@ use Rudashi\Orwell\Services\Engine;
 
 class WordRepository
 {
-    public const REGEX = '/^[A-ZĄĆĘŁŃÓŚŹŻ?*]*$/iu';
-    private Connection $db;
+    public const string REGEX = '/^[A-ZĄĆĘŁŃÓŚŹŻ?*]*$/iu';
+    private readonly Connection $db;
 
     public function __construct(DatabaseManager $db)
     {
