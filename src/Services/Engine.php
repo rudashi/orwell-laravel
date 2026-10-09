@@ -80,7 +80,7 @@ class Engine
 
     private function countWildcards(): int
     {
-        return $this->characters->filter(static fn (Alpha $alpha) => $alpha->isWildcard())->count();
+        return $this->characters->filter(static fn (Alpha $alpha): bool => $alpha->isWildcard())->count();
     }
 
     /**
@@ -123,6 +123,8 @@ class Engine
      */
     private function extractNonWildcardCharacters(Collection $chars): Collection
     {
-        return $chars->map(static fn (Alpha $alpha) => $alpha->isWildcard() ? null : $alpha->getCharacter())->filter();
+        return $chars->map(
+            static fn (Alpha $alpha): ?string => $alpha->isWildcard() ? null : $alpha->getCharacter()
+        )->filter();
     }
 }
