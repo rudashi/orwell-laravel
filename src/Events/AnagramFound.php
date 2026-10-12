@@ -22,7 +22,7 @@ class AnagramFound
         public Collection $anagrams,
         Request $request = null
     ) {
-        if ($request) {
+        if ($request !== null) {
             $this->ips = $request->getClientIps();
         }
     }
